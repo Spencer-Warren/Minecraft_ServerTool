@@ -6,6 +6,7 @@ This tool creates and issues commands to a screen session in order to keep the m
 Simply issue a stop command to the minecraft server and it will properly shut it down and close the screen once it is done.
 
 The file structure for this tool should be as follows:
+
 home/ec2-user
 |-- server1
 |   |-- server.jar
