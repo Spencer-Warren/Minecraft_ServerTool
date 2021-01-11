@@ -154,7 +154,7 @@ def launch_server(server_name):
     """
     Launches the server
     """
-    os.system("cd {}")
+    os.system("cd {}; ./LaunchServer.sh".format(server_name))
     os.system("exit")
 
 if __name__ == "__main__":
