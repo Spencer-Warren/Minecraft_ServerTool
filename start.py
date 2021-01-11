@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 import os
 import sys
-print("Welcome to my simple program\n")
 
 def server_checker():
     """
-    Looks for Directories with a "server.jar" file in it 
+    Looks for directories with a "server.jar" file in it 
     then saves it and passes it the next function
     """
     server_names = []
@@ -41,8 +40,8 @@ def menu(options,pre=""):
     while choice not in options:
         choice=input("Select one:\n")
         try:
-            choice = int(choice)
-        except:
+            choice = int(str(choice))
+        except Exception:
             print("Enter int of choice")
     if choice == len(options) + 1:
         quit()
@@ -155,9 +154,10 @@ def launch_server(server_name):
     """
     Launches the server
     """
-    os.system("cd {} ; ./LaunchServer.sh".format(server_name))
+    os.system("cd {}")
     os.system("exit")
 
 if __name__ == "__main__":
-    os.system("cd /home/ec2-user/")
+    user = str(os.system("$USER"))
+    os.system("cd {}".format(os.path.join("home",user)))
     server_checker()
