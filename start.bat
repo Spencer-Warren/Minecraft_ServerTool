@@ -1,3 +1,2 @@
 @echo off
-ssh 
-timeout 100
+python start.py
