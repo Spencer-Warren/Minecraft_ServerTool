@@ -102,8 +102,7 @@ def vpc_init():
         return ec2.Vpc(vpc)
     else:
         print("vpc id accepted...")
-        return ec2.Vpc(option_parse()["VPC_id"])
-        
+        return ec2.Vpc(option_parse()["VPC_id"])        
 
 def main():
     vpc = vpc_init()

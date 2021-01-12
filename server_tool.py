@@ -5,7 +5,8 @@ import sys
 def server_checker():
     """
     Looks for directories with a jar file in it and allows user to choose one
-    Returns: chosen server name
+    Returns: 
+        Chosen server name
     """
     server_names = []
     for direc in os.listdir("."):
@@ -22,9 +23,11 @@ def server_checker():
 def menu(options,pre=""):
     """
     Standardized menu function
-    Takes possible options in as list
-    Takes optional text to display before choices
-    Returns: the index of the option picked
+    Args:
+        options as a list
+        String to display before options
+    Returns: 
+        The index of the option picked
     """
     print("-"*25)
     if pre != "":
@@ -50,6 +53,8 @@ def menu(options,pre=""):
 def check_eula_properties(server_name):
     """
     Checks if eula.txt and server.properties exist in the selected directory
+    Args:
+        Chosen server name
     """
     file_list=[]
     for _, _, files in os.walk(server_name):
@@ -71,6 +76,8 @@ def check_eula_properties(server_name):
 def create_eula(server_name):
     """
     Create Eula.txt file and set it to true
+    Args:
+        Chosen server name
     """
     with open(os.path.join(server_name, "eula.txt"),"w") as file:
         file.write("eula=true")
@@ -79,6 +86,8 @@ def create_eula(server_name):
 def create_properties(server_name):
     """
     Reads the default properties file and writes a new one in the selected directory
+    Args:
+        Chosen server name
     """
     print("Server.properties not detected, creating...")
     with open(os.path.join("default.properties"),"r") as file:
@@ -89,6 +98,10 @@ def create_properties(server_name):
 def server_options(server_name):
     """
     Gives user choice to change server parameters or to launch the selected server
+    Args:
+        Chosen server name
+    Return:
+        Users choice as string
     """
     launch_options = ["Launch","Change world", "Change port", "Change Message of the Day", "Change player limit", "Change Selected Server"]
     launch_choice = menu(launch_options, "You've selected {}, changing dir to that".format(server_name))
@@ -101,6 +114,10 @@ def server_options(server_name):
 def options(server_name,option,options):
     """
     Function promts the user on which setting thay want to change then sends to change_option()
+    Args:
+        Chosen server name as string
+        Chosen option as string
+        list of options as a list
     """
     print("You choose to {}".format(options[option].lower()))
     option -= 1
@@ -119,6 +136,10 @@ def options(server_name,option,options):
 def detect_worlds(server_name):
     """
     Detect all world files in current server by serching for level.dat files
+    Args:
+        Chosen server name as string
+    Return:
+        worlds detected as list
     """
     worlds = []
     for _, folders, _ in os.walk(server_name):
@@ -133,6 +154,10 @@ def detect_worlds(server_name):
 def change_option(server_name, internal, new_text):
     """
     Function takes what option was choosen to change and writes it to the server.properties file
+    Args:
+        Chosen server name as string
+        Internal names for options as list
+        new text to replace the selected option as string
     """
     file = open(os.path.join(server_name, "server.properties"), "r")
     lines = file.readlines()
@@ -150,6 +175,8 @@ def launch_server(server_name):
     """
     Launches the server using selected server directory,
     max ram setting from options.txt and jar from other function
+    Args:
+        Chosen server name as string
     """
     jar = forge_test(server_name)
     os.system("cd {}; java -Xmx{} -jar {}".format(server_name, sys.argv[1], jar))
@@ -158,6 +185,10 @@ def launch_server(server_name):
 def forge_test(server_name):
     """
     looks for .jar files in selected directory and returns one
+    Args:
+        Chosen server name as string
+    Return:
+        Name of jar file to use to launch server as string
     """
     jars = []
     for _, _, files in os.walk(server_name):
