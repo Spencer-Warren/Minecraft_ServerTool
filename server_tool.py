@@ -29,7 +29,7 @@ def menu(options,pre=""):
     print("-"*25)
     if pre != "":
         print(pre +"\n")
-    options.append("Exit")
+    options.append("Enter q to Quit")
     for i, name in enumerate(options):
         print("{}: {}".format(i+1, name))
     print("-"*25)
@@ -38,10 +38,12 @@ def menu(options,pre=""):
     while choice not in options:
         choice=input("Select one:\n")
         try:
+            if choice =="q":
+                break
             choice = int(str(choice))
         except Exception:
             print("Enter int of choice")
-    if choice == len(options):
+    if choice == "q":
         return "quit"
     return(choice - 1)
 
