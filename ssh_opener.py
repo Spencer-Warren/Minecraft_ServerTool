@@ -18,10 +18,16 @@ def open_ssh(options):
     """
     Opens ssh and screen session simulataniously with specifications given in option_parse()
     """
-    cmd = "screen -dmS server_screen{num} sh -c 'python3 server_tool.py {arg}'; screen -S server_screen{num} -r".format(num = random.randint(1,1000), arg = options["Max_Ram"])
-    os.system("ssh -i ~/.ssh/{} {}@{} -t {}".format(options["Private_Key_Name"], options["AWS_Username"], options["Host_Name"], cmd))
+    cmd = "screen -dmS server_screen{num} sh -c 'python3 server_tool.py {arg}'; screen -S server_screen{num} -r"
+    cmd = cmd.format(num = random.randint(1,1000), arg = options["Max_Ram"])
+    ssh = "ssh -i ~/.ssh/{} {}@{} -t {}"
+    ssh = ssh.format(options["Private_Key_Name"], options["AWS_Username"], options["Host_Name"], cmd)
+    os.system(ssh)
 
 def main():
+    """
+    Pass options from one function to the other
+    """
     options = option_parse()
     open_ssh(options)
 
