@@ -149,7 +149,6 @@ def change_option(server_name, internal, new_text):
     print("Done")
     server_options(server_name)
 
-
 def launch_server(server_name):
     """
     Launches the server
@@ -157,22 +156,10 @@ def launch_server(server_name):
     os.system("cd {}; ./LaunchServer.sh".format(server_name))
     os.system("exit")
 
-def option_parse():
-    file = open("options.txt")
-    lines = file.readlines()
-    options = {}
-    for line in lines:
-        line = line.split("=")
-        options[line[0]] = line[1].rstrip()
-    file.close()
-    for key in options:
-        print(key,"=",options[key])
-    return options
-
-def open_ssh(options):
-    pass
-if __name__ == "__main__":
-    options = option_parse()
+def main():
     user = str(os.system("$USER"))
     os.system("cd {}".format(os.path.join("home",user)))
     server_checker()
+
+if __name__ == "__main__":
+    main()
