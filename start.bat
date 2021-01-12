@@ -1,2 +1,3 @@
 @echo off
-python ssh_opener.py
+python src/aws_integration.py
+timeout 100
