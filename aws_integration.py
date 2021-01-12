@@ -22,8 +22,8 @@ def menu(options,pre=""):
     while choice not in options:
         choice=input("Select one:\n")
         try:
-            if choice =="q":
-                break
+            if choice == "q" or choice == "":
+                return choice
             choice = int(str(choice))
         except Exception:
             print("Enter int of choice")
@@ -59,7 +59,18 @@ def list_instances(vpc):
             index = len(instances) + 1
             instance_ids = [i.id for i in ec2.instances.all()]
             instances.append(instance_ids[index])
-    return instances
+    return instances, instance_ids
+
+def choose_instance(vpc):
+    instances_names, instance_ids = list_instances(vpc)
+    default_instance = option_parse()["Default_instance"]
+    for i, instance in enumerate(instances_names):
+        if instance == default_instance:
+            instances_names[i] = instance + " (Default)"
+    instance = menu(instances_names, "Choose an instance or hit enter to choose default")
+    if instance == "":
+        print("Yes")
+        instance = default_instance
 
 def main():
     if option_parse()["VPC_id"] == "":
@@ -69,8 +80,7 @@ def main():
     else:
         vpc = ec2.Vpc(option_parse()["VPC_id"])
         print("vpc accepted...")
-    for i in list_instances(vpc):
-        print(i)
+    instance = choose_instance(vpc)
 
 if __name__ == "__main__":
     global ec2
