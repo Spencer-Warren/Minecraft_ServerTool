@@ -1,3 +1,4 @@
+VPC_id=
 Host_Name=
 AWS_Username=
 Private_Key_Name=
