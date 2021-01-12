@@ -11,7 +11,7 @@ def server_checker():
     for dr in os.listdir("."):
         if os.path.isdir(dr):
             for file in os.listdir(dr):
-                if ".jar" in file:
+                if "server" in file and ".jar" in file:
                     server_names.append(dr)
     #user picks server they wish to change/run
     server_name = server_names[menu(server_names, "Here are all the current servers:")] 
