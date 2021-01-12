@@ -72,14 +72,18 @@ def choose_instance(vpc):
         print("Yes")
         instance = default_instance
 
-def main():
+def vpc_init():
     if option_parse()["VPC_id"] == "":
         vpc = input("Please enter your vpc id:\n")
         write_setting("VPC_id", vpc)
-        vpc = ec2.Vpc(vpc)
+        print("vpc id written to settings...")
+        return ec2.Vpc(vpc)
     else:
-        vpc = ec2.Vpc(option_parse()["VPC_id"])
-        print("vpc accepted...")
+        return ec2.Vpc(option_parse()["VPC_id"])
+        print("vpc id accepted...")
+
+def main():
+    vpc = vpc_init()
     instance = choose_instance(vpc)
 
 if __name__ == "__main__":
