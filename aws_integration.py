@@ -18,7 +18,7 @@ def menu(options,pre=""):
         print("{}: {}".format(i+1, name))
     print("-"*25)
     choice=0
-    options = [i+1 for i,_ in enumerate(options)]
+    options = [i+1 for i, _ in enumerate(options)]
     while choice not in options:
         choice=input("Select one:\n")
         try:
@@ -42,13 +42,19 @@ def write_setting(key, value):
     options[key] = value
     lines = []
     for key in options:
-        lines.append(key+"="+options[key]+"\n")
-    file = open("options.txt","w")
+        lines.append(key + "=" + options[key] + "\n")
+    file = open("options.txt", "w")
     file.writelines(lines)
     file.close()
-    return options
 
 def list_instances(vpc):
+    """
+    Grabs instance name tags and ids
+    Args:
+        AWS VPC id
+    if an instance doesnt have a tag with a name,
+    it grabs the instance id
+    """
     instances = []
     for i in vpc.instances.all():
         try:
@@ -62,6 +68,12 @@ def list_instances(vpc):
     return instances, instance_ids
 
 def choose_instance(vpc):
+    """
+    Allows user to choose instance from list obtained from list_instance
+    Args:
+        AWS VPC id
+    If user hits enter the default instance is selected
+    """
     instances_names, instance_ids = list_instances(vpc)
     default_instance = option_parse()["Default_instance"]
     for i, instance in enumerate(instances_names):
@@ -71,16 +83,27 @@ def choose_instance(vpc):
     if instance == "":
         print("Yes")
         instance = default_instance
+    if instance != default_instance:
+        choice = input("Would you like to make {} your default instance? (y/n)\n")
+        if choice == "y":
+            write_setting("Default_instance", instance)
+    return instance
 
 def vpc_init():
+    """
+    gets vpc id or asks for it from the user
+    Return:
+        AWS VPC id
+    """
     if option_parse()["VPC_id"] == "":
         vpc = input("Please enter your vpc id:\n")
         write_setting("VPC_id", vpc)
         print("vpc id written to settings...")
         return ec2.Vpc(vpc)
     else:
-        return ec2.Vpc(option_parse()["VPC_id"])
         print("vpc id accepted...")
+        return ec2.Vpc(option_parse()["VPC_id"])
+        
 
 def main():
     vpc = vpc_init()
