@@ -17,9 +17,7 @@ def server_checker():
     server_name = server_names[menu(server_names, "Here are all the current servers:")]
     if server_name == "Exit":
         quit()
-
-    check_eula_properties(server_name)
-    server_options(server_name)
+    return server_name
 
 def menu(options,pre=""):
     """
@@ -31,7 +29,7 @@ def menu(options,pre=""):
     print("-"*25)
     if pre != "":
         print(pre +"\n")
-    options.append("Exit")
+    options.append("Enter q to Quit")
     for i, name in enumerate(options):
         print("{}: {}".format(i+1, name))
     print("-"*25)
@@ -40,11 +38,13 @@ def menu(options,pre=""):
     while choice not in options:
         choice=input("Select one:\n")
         try:
+            if choice =="q":
+                break
             choice = int(str(choice))
         except Exception:
             print("Enter int of choice")
-    if choice == len(options) + 1:
-        quit()
+    if choice == "q":
+        return "quit"
     return(choice - 1)
 
 def check_eula_properties(server_name):
@@ -96,9 +96,11 @@ def server_options(server_name):
     launch_choice = menu(launch_options, "You've selected {}, changing dir to that".format(server_name))
     if launch_choice == 0:
         launch_server(server_name)
+    elif launch_choice == "q":
+        return launch_choice
     else:
         options(server_name, launch_choice, launch_options)
-        server_options(server_name)
+        return launch_choice
 
 def options(server_name,option,options):
     """
@@ -147,32 +149,34 @@ def change_option(server_name, internal, new_text):
     file.writelines(lines)
     file.close()
     print("Done")
-    server_options(server_name)
-
 
 def launch_server(server_name):
     """
     Launches the server
     """
-    os.system("cd {}; ./LaunchServer.sh".format(server_name))
+    jar = forge_test(server_name)
+    os.system("cd {}; java -Xmx{} -jar {}".format(server_name, sys.argv[1], jar))
     os.system("exit")
 
-def option_parse():
-    file = open("options.txt")
-    lines = file.readlines()
-    options = {}
-    for line in lines:
-        line = line.split("=")
-        options[line[0]] = line[1].rstrip()
-    file.close()
-    for key in options:
-        print(key,"=",options[key])
-    return options
+def forge_test(server_name):
+    jars = []
+    for _, _, files in os.walk(server_name):
+                for file in files:
+                    if ".jar" in file:
+                        jars.append(file)
+                        break
+    for jar in jars:
+        if "forge" or "FTB" in jar:
+            print("Detected Forge or FTB jar using that")
+            return jar
+    return jars[0]
 
-def open_ssh(options):
-    pass
+def main():
+    server_name = server_checker()
+    check_eula_properties(server_name)
+    quit = 0
+    while quit != "quit":
+        quit = server_options(server_name)
+
 if __name__ == "__main__":
-    options = option_parse()
-    user = str(os.system("$USER"))
-    os.system("cd {}".format(os.path.join("home",user)))
-    server_checker()
+    main()

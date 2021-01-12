@@ -1,2 +1,2 @@
 @echo off
-python server_tool.py
+python ssh_opener.py
