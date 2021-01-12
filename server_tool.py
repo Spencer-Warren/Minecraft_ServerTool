@@ -96,6 +96,8 @@ def server_options(server_name):
     launch_choice = menu(launch_options, "You've selected {}, changing dir to that".format(server_name))
     if launch_choice == 0:
         launch_server(server_name)
+    elif launch_choice == "q":
+        return launch_choice
     else:
         options(server_name, launch_choice, launch_options)
         return launch_choice
@@ -152,8 +154,22 @@ def launch_server(server_name):
     """
     Launches the server
     """
-    os.system("cd {}; ./LaunchServer.sh".format(server_name))
+    jar = forge_test(server_name)
+    os.system("cd {}; java -Xmx{} -jar {}".format(server_name, sys.argv[1], jar))
     os.system("exit")
+
+def forge_test(server_name):
+    jars = []
+    for _, _, files in os.walk(server_name):
+                for file in files:
+                    if ".jar" in file:
+                        jars.append(file)
+                        break
+    for jar in jars:
+        if "forge" or "FTB" in jar:
+            print("Detected Forge or FTB jar using that")
+            return jar
+    return jars[0]
 
 def main():
     server_name = server_checker()

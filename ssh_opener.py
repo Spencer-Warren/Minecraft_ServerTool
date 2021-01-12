@@ -11,7 +11,7 @@ def option_parse():
     return options
 
 def open_ssh(options):
-    cmd = "screen -dmS server_screen{num} sh -c 'python3 server_tool.py'; screen -S server_screen{num} -r".format(num = random.randint(1,1000))
+    cmd = "screen -dmS server_screen{num} sh -c 'python3 server_tool.py {arg}'; screen -S server_screen{num} -r".format(num = random.randint(1,1000), arg = options["Max_Ram"])
     os.system("ssh -i ~/.ssh/{} {}@{} -t {}".format(options["Private_Key_Name"], options["AWS_Username"], options["Host_Name"], cmd))
 
 def main():
