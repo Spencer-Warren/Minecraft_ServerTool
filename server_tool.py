@@ -157,7 +157,7 @@ def launch_server(server_name):
     os.system("exit")
 
 def main():
-    user = str(os.system("$USER"))
+    user = str(os.system("echo none; echo $USER"))
     os.system("cd {}".format(os.path.join("home",user)))
     server_checker()
 
