@@ -48,15 +48,31 @@ def write_setting(key, value):
     file.close()
     return options
 
+def list_instances(vpc):
+    instances = []
+    for i in vpc.instances.all():
+        try:
+            for tag in i.tags:
+                if tag['Key'] == "Name":
+                    instances.append(tag["Value"])
+        except TypeError:
+            index = len(instances) + 1
+            instance_ids = [i.id for i in ec2.instances.all()]
+            instances.append(instance_ids[index])
+    return instances
+
 def main():
-    ec2 = boto3.resource("ec2")
     if option_parse()["VPC_id"] == "":
-        vpc=input("Please enter your vpc id:\n")
+        vpc = input("Please enter your vpc id:\n")
         write_setting("VPC_id", vpc)
         vpc = ec2.Vpc(vpc)
     else:
         vpc = ec2.Vpc(option_parse()["VPC_id"])
         print("vpc accepted...")
+    for i in list_instances(vpc):
+        print(i)
 
 if __name__ == "__main__":
+    global ec2
+    ec2 = boto3.resource("ec2")
     main()
