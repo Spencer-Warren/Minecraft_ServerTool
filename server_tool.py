@@ -17,9 +17,7 @@ def server_checker():
     server_name = server_names[menu(server_names, "Here are all the current servers:")]
     if server_name == "Exit":
         quit()
-
-    check_eula_properties(server_name)
-    server_options(server_name)
+    return server_name
 
 def menu(options,pre=""):
     """
@@ -43,8 +41,8 @@ def menu(options,pre=""):
             choice = int(str(choice))
         except Exception:
             print("Enter int of choice")
-    if choice == len(options) + 1:
-        quit()
+    if choice == len(options):
+        return "quit"
     return(choice - 1)
 
 def check_eula_properties(server_name):
@@ -98,7 +96,7 @@ def server_options(server_name):
         launch_server(server_name)
     else:
         options(server_name, launch_choice, launch_options)
-        server_options(server_name)
+        return launch_choice
 
 def options(server_name,option,options):
     """
@@ -147,7 +145,6 @@ def change_option(server_name, internal, new_text):
     file.writelines(lines)
     file.close()
     print("Done")
-    server_options(server_name)
 
 def launch_server(server_name):
     """
@@ -157,9 +154,11 @@ def launch_server(server_name):
     os.system("exit")
 
 def main():
-    user = str(os.system("echo none; echo $USER"))
-    os.system("cd {}".format(os.path.join("home",user)))
-    server_checker()
+    server_name = server_checker()
+    check_eula_properties(server_name)
+    quit = 0
+    while quit != "quit":
+        quit = server_options(server_name)
 
 if __name__ == "__main__":
     main()
