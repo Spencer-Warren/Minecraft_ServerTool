@@ -4,17 +4,17 @@ import sys
 
 def server_checker():
     """
-    Looks for directories with a "server.jar" file in it 
-    then saves it and passes it the next function
+    Looks for directories with a jar file in it and allows user to choose one
+    Returns: chosen server name
     """
     server_names = []
     for dr in os.listdir("."):
         if os.path.isdir(dr):
             for file in os.listdir(dr):
-                if file == "LaunchServer.sh":
+                if ".jar" in file:
                     server_names.append(dr)
-
-    server_name = server_names[menu(server_names, "Here are all the current servers:")]
+    #user picks server they wish to change/run
+    server_name = server_names[menu(server_names, "Here are all the current servers:")] 
     if server_name == "Exit":
         quit()
     return server_name
@@ -22,9 +22,9 @@ def server_checker():
 def menu(options,pre=""):
     """
     Standardized menu function
-    Takes options in as list
-    Takes optional pre text
-    returns option picked
+    Takes possible options in as list
+    Takes optional text to display before choices
+    Returns: the index of the option picked
     """
     print("-"*25)
     if pre != "":
@@ -49,18 +49,18 @@ def menu(options,pre=""):
 
 def check_eula_properties(server_name):
     """
-    Checks if eula.txt and server.properties exist in the selected folder
+    Checks if eula.txt and server.properties exist in the selected directory
     """
     file_list=[]
-    for a, b, files in os.walk(server_name):
+    for _, _, files in os.walk(server_name):
         file_list.append(files)
-    if "server.properties" not in file_list[0]:
+    if "server.properties" not in file_list: 
         create_properties(server_name)
     if "eula.txt" in file_list[0]:
             eula = open(os.path.join(server_name, "eula.txt"),"r")
             lines = eula.readlines()
             if len(lines) > 1:
-                if "eula=true" not in lines[1]:
+                if "eula=true" not in lines[1]: #checking if eula is set to true
                     create_eula(server_name)
             else:
                 if lines[0] !="eula=true\n":
@@ -78,19 +78,17 @@ def create_eula(server_name):
 
 def create_properties(server_name):
     """
-    reads the default properties file and
-    writes a new one in the selected directory
+    Reads the default properties file and writes a new one in the selected directory
     """
+    print("Server.properties not detected, creating...")
     with open(os.path.join("default.properties"),"r") as file:
         properties = file.readlines()
     with open(os.path.join(server_name, "server.properties"),"w") as file:
         file.writelines(properties)
-    print("Server.properties not detected, creating...")
 
 def server_options(server_name):
     """
-    Options to launch server 
-    or change options
+    Gives user choice to change server parameters or to launch the selected server 
     """
     launch_options = ["Launch","Change world", "Change port", "Change Message of the Day", "Change player limit", "Change Selected Server"]
     launch_choice = menu(launch_options, "You've selected {}, changing dir to that".format(server_name))
@@ -104,7 +102,7 @@ def server_options(server_name):
 
 def options(server_name,option,options):
     """
-    Function promts the user on which setting thay want to change
+    Function promts the user on which setting thay want to change then sends to change_option()
     """
     print("You choose to {}".format(options[option].lower()))
     option -= 1
@@ -136,7 +134,7 @@ def detect_worlds(server_name):
 
 def change_option(server_name, internal, new_text):
     """
-    Function takes what option was choosen to change and changes it
+    Function takes what option was choosen to change and writes it to the server.properties file
     """
     file = open(os.path.join(server_name, "server.properties"), "r")
     lines = file.readlines()
@@ -152,13 +150,16 @@ def change_option(server_name, internal, new_text):
 
 def launch_server(server_name):
     """
-    Launches the server
+    Launches the server using selected server directory, max ram setting from options.txt and jar from other function
     """
     jar = forge_test(server_name)
     os.system("cd {}; java -Xmx{} -jar {}".format(server_name, sys.argv[1], jar))
-    os.system("exit")
+    os.system("exit")  #exits screen when jar is closed
 
 def forge_test(server_name):
+    """
+    looks for .jar files in selected directory and returns one
+    """
     jars = []
     for _, _, files in os.walk(server_name):
                 for file in files:
@@ -166,7 +167,7 @@ def forge_test(server_name):
                         jars.append(file)
                         break
     for jar in jars:
-        if "forge" or "FTB" in jar:
+        if "forge" or "FTB" in jar: # FTB and forge use custom jar files and you launch them instead of the vanilla mojang jar
             print("Detected Forge or FTB jar using that")
             return jar
     return jars[0]
@@ -175,7 +176,7 @@ def main():
     server_name = server_checker()
     check_eula_properties(server_name)
     quit = 0
-    while quit != "quit":
+    while quit != "quit": #allows changing of multiple options and quick exit
         quit = server_options(server_name)
 
 if __name__ == "__main__":
