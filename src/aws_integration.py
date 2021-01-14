@@ -1,6 +1,8 @@
 import boto3
 from ssh_opener import option_parse
 
+ec2 = boto3.resource("ec2")
+
 def menu(options,pre=""):
     """
     Standardized menu function
@@ -52,7 +54,7 @@ def list_instances(vpc):
     Grabs instance name tags and ids
     Args:
         AWS VPC id
-    if an instance doesnt have a tag with a name,
+    if an instance dosent have a tag with a name,
     it grabs the instance id
     """
     instances = []
@@ -96,7 +98,10 @@ def vpc_init():
         AWS VPC id
     """
     if option_parse()["VPC_id"] == "":
-        vpc = input("Please enter your vpc id:\n")
+        try:
+            print("Requesting default vpc id")
+            vpc = list(ec2.vpcs.filter(
+            Filters=[{'Name': 'isDefault', 'Values': ['true']}]))[0]
         write_setting("VPC_id", vpc)
         print("vpc id written to settings...")
         return ec2.Vpc(vpc)
@@ -109,6 +114,4 @@ def main():
     instance = choose_instance(vpc)
 
 if __name__ == "__main__":
-    global ec2
-    ec2 = boto3.resource("ec2")
     main()
