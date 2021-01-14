@@ -58,14 +58,17 @@ def list_instances(vpc):
     it grabs the instance id
     """
     instances = []
+    instance_ids = [i.id for i in ec2.instances.all()]
     for i in vpc.instances.all():
         try:
             for tag in i.tags:
                 if tag['Key'] == "Name":
                     instances.append(tag["Value"])
         except TypeError:
-            index = len(instances) + 1
-            instance_ids = [i.id for i in ec2.instances.all()]
+            if len(instances) > 0:
+                index = len(instances) + 1
+            else:
+                index = 0
             instances.append(instance_ids[index])
     return instances, instance_ids
 
@@ -76,12 +79,14 @@ def choose_instance(vpc):
         AWS VPC id
     If user hits enter the default instance is selected
     """
-    instances_names, instance_ids = list_instances(vpc)
+    instance_names, instance_ids = list_instances(vpc)
     default_instance = option_parse()["Default_instance"]
-    for i, instance in enumerate(instances_names):
+    instance_descriptions = []
+    for i, instance in enumerate(instance_ids):
+        instance = instance + i.state["Name"]
         if instance == default_instance:
-            instances_names[i] = instance + " (Default)"
-    instance = menu(instances_names, "Choose an instance or hit enter to choose default")
+            instance_descriptions.append(instance + " (Default)")
+    instance = menu(instance_names, "Choose an instance or hit enter to choose default")
     if instance == "":
         print("Yes")
         instance = default_instance
