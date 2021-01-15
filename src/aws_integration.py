@@ -72,15 +72,13 @@ def list_instances(vpc):
             instances.append(instance_ids[index])
     return instances, instance_ids
 
-def choose_instance(vpc):
+def choose_instance(vpc, instance_names, instance_ids, default_instance):
     """
     Allows user to choose instance from list obtained from list_instance
     Args:
         AWS VPC id
     If user hits enter the default instance is selected
     """
-    instance_names, instance_ids = list_instances(vpc)
-    default_instance = option_parse()["Default_instance"]
     instance_descriptions = []
     for i, instance in enumerate(instance_ids):
         instance = instance + i.state["Name"]
@@ -113,10 +111,3 @@ def vpc_init():
     else:
         print("vpc id accepted...")
         return ec2.Vpc(option_parse()["VPC_id"])        
-
-def main():
-    vpc = vpc_init()
-    instance = choose_instance(vpc)
-
-if __name__ == "__main__":
-    main()

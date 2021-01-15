@@ -26,13 +26,3 @@ def open_ssh(options):
     ssh = "ssh -i ~/.ssh/{} {}@{} -t {}"
     ssh = ssh.format(options["Private_Key_Name"], options["AWS_Username"], options["Host_Name"], cmd)
     os.system(ssh)
-
-def main():
-    """
-    Pass options from one function to the other
-    """
-    options = option_parse()
-    open_ssh(options)
-
-if __name__ =="__main__":
-    main()
