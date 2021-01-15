@@ -17,9 +17,9 @@ def option_parse():
 
 def open_ssh(options):
     """
-    Opens ssh and screen session simulataniously with specifications given in option_parse()
+    Opens ssh and screen session simultaneously with specifications given in option_parse()
     Args:
-         options from options.txt file as list
+        options from options.txt file as list
     """
     cmd = "screen -dmS server_screen{num} sh -c 'python3 server_tool.py {arg}'; screen -S server_screen{num} -r"
     cmd = cmd.format(num = random.randint(1,1000), arg = options["Max_Ram"])
