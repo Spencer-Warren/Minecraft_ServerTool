@@ -1,16 +1,16 @@
 @echo off
 echo Checking for prereqs...
 
-python --version
+python --version >NUL
 if errorlevel 1 goto :errorNoPython
 echo Python is installed...
 
+:packageChecks
 python -c "import boto3"
 if errorlevel 1 goto :errorNoBoto3
 echo Boto3 is installed...
 
-aws --version
-if errorlevel 1 goto :errorNoAWScli
+call aws --version >NUL
 echo AWS cli is installed...
 goto :start
 
@@ -25,18 +25,16 @@ goto :EOF
 
 :errorNoBoto3
 pip install boto3 --user
-if errorlevel 1 goto :errorpip
+goto :packageChecks
 
 :errorNoAWScli
-pip3 install awscli --upgrade --user
-if errorlevel 1 goto :errorpip
+pip3 install awscli --upgrade
+echo Create an api key
+aws configure
+goto :packageChecks
 
-:errorpip
-echo there is an issue with pip
-timeout 20
-goto :EOF
 
 :start
-echo prereqs installed! Starting
-py src/aws_integration.py
-timeout 100
+echo prereqs installed! Starting...
+python src/aws_integration.py
+timeout 10
