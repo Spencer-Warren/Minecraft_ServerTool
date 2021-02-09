@@ -103,9 +103,10 @@ def vpc_init():
     if option_parse()["VPC_id"] == "":
         try:
             print("Requesting default vpc id")
-            vpc = list(ec2.vpcs.filter(
-            Filters=[{'Name': 'isDefault', 'Values': ['true']}]))[0]
-        write_setting("VPC_id", vpc)
+            vpc = list(ec2.vpcs.filter(Filters=[{'Name': 'isDefault', 'Values': ['true']}]))[0]
+        except Exception as e:
+            print(e)
+        write_setting("VPC_id", str(vpc))
         print("vpc id written to settings...")
         return ec2.Vpc(vpc)
     else:

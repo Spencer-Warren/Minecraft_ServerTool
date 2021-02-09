@@ -1,5 +1,5 @@
-from ssh_opener import vpc_init, choose_instance, list_instances
-from aws_integration import option_parse, open_ssh
+from aws_integration import  vpc_init, choose_instance, list_instances
+from ssh_opener import  option_parse, open_ssh
 
 def main():
     vpc = vpc_init()

@@ -1,4 +1,6 @@
 @echo off
+@REM for debugging use and 
+@REM for running uncompilied python code
 echo Checking for prereqs...
 
 python --version >NUL
@@ -36,5 +38,5 @@ goto :packageChecks
 
 :start
 echo prereqs installed! Starting...
-python src/aws_integration.py
-timeout 10
+python src/main.py
+timeout 20
