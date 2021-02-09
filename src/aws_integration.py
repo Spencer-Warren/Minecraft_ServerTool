@@ -81,12 +81,10 @@ def choose_instance(vpc, instance_names, instance_ids, default_instance):
     """
     instance_descriptions = []
     for i, instance in enumerate(instance_ids):
-        instance = instance + i.state["Name"]
         if instance == default_instance:
             instance_descriptions.append(instance + " (Default)")
     instance = menu(instance_names, "Choose an instance or hit enter to choose default")
     if instance == "":
-        print("Yes")
         instance = default_instance
     if instance != default_instance:
         choice = input("Would you like to make {} your default instance? (y/n)\n")
@@ -100,15 +98,10 @@ def vpc_init():
     Return:
         AWS VPC id
     """
-    if option_parse()["VPC_id"] == "":
-        try:
-            print("Requesting default vpc id")
-            vpc = list(ec2.vpcs.filter(Filters=[{'Name': 'isDefault', 'Values': ['true']}]))[0]
-        except Exception as e:
-            print(e)
-        write_setting("VPC_id", str(vpc))
-        print("vpc id written to settings...")
-        return ec2.Vpc(vpc)
-    else:
-        print("vpc id accepted...")
-        return ec2.Vpc(option_parse()["VPC_id"])        
+    try:
+        print("Requesting default vpc id")
+        vpc = list(ec2.vpcs.filter(Filters=[{'Name': 'isDefault', 'Values': ['true']}]))[0]
+        print(vpc.id)
+    except Exception as e:
+        print(e)
+    return ec2.Vpc(vpc.id)

@@ -13,6 +13,7 @@ if errorlevel 1 goto :errorNoBoto3
 echo Boto3 is installed...
 
 call aws --version >NUL
+if errorlevel 1 goto :errorNoAWScli
 echo AWS cli is installed...
 goto :start
 
@@ -39,4 +40,4 @@ goto :packageChecks
 :start
 echo prereqs installed! Starting...
 python src/main.py
-timeout 20
+timeout 120
