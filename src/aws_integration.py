@@ -4,52 +4,6 @@ from ssh_opener import option_parse
 
 ec2 = boto3.resource("ec2")
 
-def menu(options,pre=""):
-    """
-    Standardized menu function
-    Args: 
-        Possible options in as list
-        Optional text to display before choices
-    Returns: 
-        The index of the option picked
-    """
-    print("-"*25)
-    if pre != "":
-        print(pre +"\n")
-    options.append("Enter q to Quit")
-    for i, name in enumerate(options):
-        print("{}: {}".format(i+1, name))
-    print("-"*25)
-    choice=0
-    options = [i+1 for i, _ in enumerate(options)]
-    while choice not in options:
-        choice=input("Select one:\n")
-        try:
-            choice = int(str(choice))
-        except TypeError:
-            if choice.lower() == "q":
-                sys.exit(0)
-            print("Enter int of choice")
-        except ValueError:
-            return ""
-    return choice - 1
-
-def write_setting(key, value):
-    """
-    Writes given option to options.txt file
-    Args:
-        Key for option ex. VPC_id
-        Value to write to setting
-    """
-    options = option_parse()
-    options[key] = value
-    lines = []
-    for key in options:
-        lines.append(key + "=" + str(options[key]) + "\n")
-    file = open("options.txt", "w")
-    file.writelines(lines)
-    file.close()
-
 def list_instances(vpc):
     """
     Grabs instance name tags and ids
@@ -80,14 +34,15 @@ def choose_instance(vpc, instance_names, instance_ids, default_instance):
     for i, instance in enumerate(instance_names):
         if instance == default_instance:
             instance_descriptions.append(instance + " (Default)")
-        instance_descriptions.append(instance)
+        else:
+            instance_descriptions.append(instance)
     instance_index = menu(instance_descriptions, "Choose an instance or hit enter to choose default")
     if instance_index == "":
         instance = default_instance
         return instance
     instance_name = instance_names[instance_index]
     instance_id = instance_ids[instance_index]
-    if instance != default_instance:
+    if instance_name != default_instance:
         choice = input("Would you like to make {} your default instance? (y/n)\n".format(instance_name))
         if choice.lower() == "y":
             write_setting("Default_instance", instance_name)
@@ -105,3 +60,5 @@ def vpc_init():
     except Exception as e:
         print(e)
     return ec2.Vpc(vpc.id)
+
+# def create_key()
